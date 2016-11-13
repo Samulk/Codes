@@ -1,0 +1,232 @@
+
+#include <map>
+#include <set>
+#include <list>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <string>
+#include <bitset>
+#include <cstdio>
+#include <limits>
+#include <vector>
+#include <climits>
+#include <cstring>
+#include <cstdlib>
+#include <fstream>
+#include <numeric>
+#include <sstream>
+#include <iostream>
+#include <algorithm>
+#include <unordered_map>
+
+using namespace std;
+
+struct Node{
+    int x;
+    int y;
+
+	bool operator==(const Node& rhs) {
+		return (x == rhs.x) && (y == rhs.y);
+	}
+};
+
+int N;
+int M;
+
+
+int findNeighbors(vector< vector<int> > & grid, int i, int j)
+{
+    queue<Node> frontier;
+    vector<Node> visited;
+    int size = 1;
+    
+    Node n;
+    n.x = i;
+    n.y = j;
+	grid[i][j] = -1;
+    frontier.push(n);
+    
+    while(!frontier.empty())
+    {
+        Node temp = frontier.front();
+		frontier.pop();
+        
+        visited.push_back(temp);
+                
+        int ii = temp.x;
+        int jj = temp.y;
+		//cout << "Processing " << ii << " and " << jj << endl;
+        vector<Node>::iterator iter;
+        
+        if(ii > 0 && jj > 0 && grid[ii-1][jj-1] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii - 1;
+            neighbor.y = jj - 1;
+            
+            grid[ii-1][jj-1] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+				frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(ii > 0 && grid[ii-1][jj] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii - 1;
+            neighbor.y = jj;
+            
+            grid[ii-1][jj] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(ii > 0 && jj < (M - 1) && grid[ii-1][jj+1] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii - 1;
+            neighbor.y = jj + 1;
+            
+            grid[ii-1][jj+1] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(jj > 0 && grid[ii][jj-1] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii;
+            neighbor.y = jj - 1;
+            
+            grid[ii][jj-1] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(jj < (M-1) && grid[ii][jj+1] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii;
+            neighbor.y = jj + 1;
+            
+            grid[ii][jj+1] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(ii < (N-1) && jj > 0 && grid[ii+1][jj-1] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii + 1;
+            neighbor.y = jj - 1;
+            
+            grid[ii+1][jj-1] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(ii < (N-1) && grid[ii+1][jj] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii + 1;
+            neighbor.y = jj;
+            
+            grid[ii+1][jj] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+        
+        if(ii < (N-1) && jj < (M-1) && grid[ii+1][jj+1] == 1)
+        {
+            Node neighbor;
+            neighbor.x = ii + 1;
+            neighbor.y = jj + 1;
+            
+            grid[ii+1][jj+1] = -1;
+            iter = std::find(visited.begin(),visited.end(),neighbor);
+            
+            if(iter == visited.end()) {
+                frontier.push(neighbor);
+                size++;
+            }
+        }
+    }
+    
+    return size;
+}
+
+
+int main(){
+
+	//ifstream inFile("code.txt");
+    //rows
+	int n = 0;
+    cin >> n;
+	//cout << n << endl;
+    N = n;
+    //cols
+	int m = 0;
+    cin >> m;
+	//cout << m << endl;
+    M = m;
+    vector< vector<int> > grid(n,vector<int>(m));
+    for(int grid_i = 0;grid_i < n;grid_i++){
+       for(int grid_j = 0;grid_j < m;grid_j++){
+          cin >> grid[grid_i][grid_j];
+		  //cout << grid[grid_i][grid_j] << " ";
+       }
+	   //cout << endl;
+    }
+
+	int max = 0;
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            if(grid[i][j] == 1) {
+                int ans = findNeighbors(grid, i, j);
+                if(ans > max)
+                {
+                    max = ans;    
+                }    
+            } else 
+                continue;
+        }
+    }
+    
+    cout <<  max << endl;;
+
+	//inFile.close();
+    //cout << get_biggest(grid, n, m) << endl;
+    return 0;
+}

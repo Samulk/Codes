@@ -1,0 +1,43 @@
+#include <string>
+#include <map>
+#include <vector>
+#include <iostream>
+
+
+using namespace std;
+
+
+int main(){
+    
+    int n = 0;
+    map<string,int> dictionary;
+    int count = 0;
+    cin >> n;
+    for(int a0 = 0; a0 < n; a0++){
+        
+        string op;
+        string contact;
+        cin >> op >> contact;
+        count = 0;
+        if(op == "add")
+            {
+            for(int i = 0; i < contact.size(); i++)
+                {
+                string substr = contact.substr(0,i+1);
+                dictionary[substr]++;
+            }
+        }
+            
+        else {
+            map<string,int>::iterator itr = dictionary.find(contact);
+            if(itr != dictionary.end())
+            {
+                cout << itr->second << endl;
+                
+            } else
+                cout << 0 << endl;
+        }
+    }
+    return 0;
+
+}

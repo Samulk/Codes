@@ -1,0 +1,90 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <fstream>
+
+using namespace std;
+
+class IceCream {
+    
+    public: 
+        int flavor; 
+        int index;
+
+        IceCream(int f, int i) {
+            flavor = f;
+            index = i;
+       }
+};
+
+struct compare
+{
+    inline bool operator() (const IceCream& struct1, const IceCream& struct2)
+    {
+        return (struct1.flavor < struct2.flavor);
+    }
+};
+
+int binarySearch(int first, int last, vector<IceCream> arr, int search) {
+   if(first > last)
+       return -1;
+    else {
+        int middle = (first + last)/2;
+		//cout << middle << endl;
+		//cout << arr[middle].flavor << endl;
+        if(arr[middle].flavor == search)
+			return arr[middle].index;
+        else if(arr[middle].flavor < search)
+        {
+            return binarySearch(middle + 1, last, arr, search);
+        } else {
+            return binarySearch(first, middle - 1, arr, search);
+        }
+    }
+}
+
+int main() {
+    int t;
+    int n, m;
+	ifstream inFile("code.txt");
+    cin >> t;
+	//inFile >> t;
+    for(int test = 0; test < t; test++) {       
+        //inFile >> m >> n;
+		cin >> m >> n;
+        vector<IceCream> arr;
+        arr.reserve(n); 
+
+        for (int i = 0; i < n; i++) {
+            int cost;
+            cin >> cost;
+			//inFile >> cost;
+            arr.push_back(IceCream(cost, i + 1));
+        }
+
+        sort(arr.begin(), arr.end(), compare());
+		for(int i = 0; i < arr.size(); i++)
+		{
+			//cout << "Index: " <<arr[i].index << " Value: " << arr[i].flavor << endl;
+		}
+		//cout << endl;
+
+        int firstIndex = 100000, secondIndex = 100000;
+        for(int i = 0; i < n ; i++) {
+            int search = m - arr[i].flavor;
+            if(search >= arr[i].flavor) {
+                int index = binarySearch( i + 1, n - 1, arr, search);
+                if( index != -1 ) {
+					if(arr[i].index < index)
+						cout << arr[i].index << " " << index << endl;
+					else
+						cout << index << " " << arr[i].index << endl;
+                    break;
+
+                }
+            }
+        }
+
+    }
+
+}

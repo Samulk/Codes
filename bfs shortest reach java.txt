@@ -1,0 +1,127 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+    
+    public static class Node {
+        int edge_id;
+        int depth;
+    }
+    
+    public static class Graph {
+        int num_nodes;
+        Map<Integer, ArrayList<Integer>> hmap;
+        public Graph(int size) {
+            hmap = new HashMap<Integer, ArrayList<Integer>>();
+            num_nodes = size;
+        }
+
+        public void addEdge(int first, int second) {
+            if (hmap.get(first) == null) {
+                hmap.put(first, new ArrayList<Integer>());
+                hmap.get(first).add(second);
+            } else {
+                ArrayList<Integer> edges = hmap.get(first);
+                if(edges.contains(second)) {
+                } else {
+                    hmap.get(first).add(second);
+                }
+            }
+            
+            if (hmap.get(second) == null) {
+                hmap.put(second, new ArrayList<Integer>());
+                hmap.get(second).add(first);
+            } else {
+                
+                ArrayList<Integer> edges = hmap.get(second);
+                if(edges.contains(first)) {
+                } else {
+                    hmap.get(second).add(first);
+                }
+            }
+        }
+        
+        public int[] shortestReach(int startId) { // 0 indexed
+            int[] intArray = new int[num_nodes];
+            for(int i = 0; i < intArray.length; i++)
+            {
+                intArray[i] = -1;    
+            }
+            ArrayList<Node> frontier =  new ArrayList<Node>();
+            ArrayList<Integer> frontierInt =  new ArrayList<Integer>();
+            ArrayList<Integer> visited =  new ArrayList<Integer>();
+            
+            Node n = new Node();
+            n.edge_id = startId;
+            n.depth = 0;
+            frontier.add(n);
+            frontierInt.add(n.edge_id);
+            //int depth = 1;
+            while(!frontier.isEmpty()) {
+                Node current_node = frontier.remove(0);
+                frontierInt.remove(0);
+                visited.add(current_node.edge_id);
+                
+                ArrayList<Integer> children = hmap.get(current_node.edge_id);
+                if(children == null) {
+                    continue;
+                } else {
+                    for(int i = 0; i < children.size(); i++) {
+                        int child_index = children.get(i);
+                        
+                        if(visited.contains(child_index) || frontierInt.contains(child_index)) {
+                            continue;
+                        } else {
+                            intArray[child_index] = (current_node.depth + 1) * 6;
+                            Node child_node = new Node();
+                            child_node.edge_id = child_index;
+                            child_node.depth = current_node.depth + 1;
+                            frontier.add(child_node);
+                            frontierInt.add(child_index);
+                        }
+                    }
+                }
+            }
+            return intArray;
+        }
+    }
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+      
+        int queries = scanner.nextInt();
+        
+        for (int t = 0; t < queries; t++) {
+            
+            // Create a graph of size n where each edge weight is 6:
+            Graph graph = new Graph(scanner.nextInt());
+            int m = scanner.nextInt();
+            
+            // read and set edges
+            for (int i = 0; i < m; i++) {
+                int u = scanner.nextInt() - 1;
+                int v = scanner.nextInt() - 1;
+                
+                // add each edge to the graph
+                graph.addEdge(u, v);
+            }
+            
+            // Find shortest reach from node s
+            int startId = scanner.nextInt() - 1;
+            int[] distances = graph.shortestReach(startId);
+ 
+            for (int i = 0; i < distances.length; i++) {
+                if (i != startId) {
+                    System.out.print(distances[i]);
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();            
+        }
+        
+        scanner.close();
+    }
+}
