@@ -1,0 +1,2 @@
+Comparators in C++
+http://fusharblog.com/3-ways-to-define-comparison-functions-in-cpp/
